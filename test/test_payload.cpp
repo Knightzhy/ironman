@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <gtest/gtest.h>
 #include "../serialize/string_payload.h"
+#include "../serialize/sample_message.h"
 
 TEST(PAYLOAD, A)
 {
@@ -29,6 +30,11 @@ TEST(PAYLOAD, A)
     }
     printf("length=%d, l=%d,msg=%s\n",
             (int)length2, (int)w, buffer2);
+}
+
+TEST(PAYLOAD, B)
+{
+    ironman::serialize::SampleMessage msg;
 }
 
 int main(int argc, char *argv[])
