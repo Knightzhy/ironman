@@ -12,7 +12,7 @@ StringPayload::StringPayload(const char *msg)
     memset(_msg, 0, _kMaxLength);
     strcpy(_msg, msg);
 }
-size_t StringPayload::GetMessageLength()
+size_t StringPayload::GetPayloadLength()
 {
     return strlen(_msg) + 1;
 }

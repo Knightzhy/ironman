@@ -15,15 +15,34 @@
 
 #ifndef __IRONMAN_SERIALIZE_MESSAGE_H__
 #define __IRONMAN_SERIALIZE_MESSAGE_H__
+#include "header.h"
+#include "payload.h"
 namespace ironman{
 namespace serialize{
+
+/*
+ * length header payload
+ * */
 
 class Message{
 public :
 Message(){}
 virtual ~Message(){}
-virtual int AttachPayload(const Payload *) = 0;
-virtual int DetachPayload(Payload *) = 0;
+
+ssize_t Serialize(void *buffer, const header *, const payload *);
+ssize_t UnSerialize(const void *buffer, size_t length, header *, payload *);
+private :
+#pragma pack(push)
+#pragma pack(1)
+struct Packet{
+    int32_t magic;
+    uint32_t length;
+    char header[];
+    char payload[];
+}; // end struct Packet
+#pragma pack(pop)
+protected :
+    int32_t _magic;
 }; // end class
 
 } // end namespace serialize

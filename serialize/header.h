@@ -29,8 +29,6 @@ virtual ~Header(){}
 virtual size_t GetHeaderLength() = 0;
 virtual ssize_t Serialize(void *buffer, size_t length) = 0;
 virtual ssize_t UnSerialize(const void *buffer, size_t length) = 0;
-private :
-uint32_t _total_length;
 }; // end namespace Header
 
 } // end serialize
