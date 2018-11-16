@@ -1,14 +1,15 @@
 #include "string_payload.h"
 namespace ironman{
 namespace serialize{
+uint32_t StringPayload::_kMaxLength = 100;
 StringPayload::StringPayload()
 {
-    memset(_msg, 0, 100);
+    memset(_msg, 0, _kMaxLength);
 }
 
 StringPayload::StringPayload(const char *msg)
 {
-    memset(_msg, 0, 100);
+    memset(_msg, 0, _kMaxLength);
     strcpy(_msg, msg);
 }
 size_t StringPayload::GetMessageLength()
@@ -30,8 +31,8 @@ ssize_t StringPayload::Serialize(void *buffer, size_t length)
 
 int StringPayload::Unserialize(const void *buffer, size_t length)
 {
-    memset(_msg, 0, 100);
-    if (length >= 100 || length <= 0) {
+    memset(_msg, 0, _kMaxLength);
+    if (length >= _kMaxLength) {
         return -1;
     }
     strncpy(_msg,reinterpret_cast<const char *>(buffer), length);

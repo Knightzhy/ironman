@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <gtest/gtest.h>
 #include "../serialize/string_payload.h"
+#include "../serialize/sample_header.h"
 #include "../serialize/sample_message.h"
 
 TEST(PAYLOAD, A)
@@ -34,7 +35,37 @@ TEST(PAYLOAD, A)
 
 TEST(PAYLOAD, B)
 {
-    ironman::serialize::SampleMessage msg;
+    ironman::serialize::SampleHeader sample_header;
+    sample_header.Init();
+    sample_header.SetMagic(55443322);
+    sample_header.SetSeq(7788231);
+    sample_header.SetInterface(118);
+    ironman::serialize::Header *header = &sample_header;
+    printf("header:%p, %p, %d, %d, %ld, %d\n",
+            header, &sample_header,
+            (int)header->GetHeaderLength(),
+            sample_header.GetMagic(),
+            sample_header.GetSeq(),
+            sample_header.GetInterface());
+    void *buffer = malloc(header->GetHeaderLength());
+    ssize_t length = header->Serialize(buffer, header->GetHeaderLength());
+    printf("buffer:%p, %d\n", buffer, (int)length);
+
+    ironman::serialize::SampleHeader *sample =
+        new ironman::serialize::SampleHeader;
+    sample->Init();
+    ironman::serialize::Header *header2 = sample;
+    header2->UnSerialize(buffer, (size_t)length);
+    printf("sample:%p, %p, %d, %ld, %d\n",
+            sample, header2,
+            sample->GetMagic(),
+            sample->GetSeq(), sample->GetInterface());
+
+    free(buffer);
+    buffer = NULL;
+    delete sample;
+    sample = NULL;
+    header2 = NULL;
 }
 
 int main(int argc, char *argv[])

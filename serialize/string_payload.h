@@ -16,6 +16,7 @@
 #ifndef __IRONMAN_SERIALIZE_STRING_PAYLOAD_H__
 #define __IRONMAN_SERIALIZE_STRING_PAYLOAD_H__
 #include <string.h>
+#include <stdint.h>
 #include <unistd.h>
 #include "payload.h"
 namespace ironman{
@@ -31,6 +32,7 @@ virtual ssize_t Serialize(void *buffer, size_t length);
 
 private :
     char _msg[100];
+    static uint32_t _kMaxLength;
 }; // end class StringPayload
 } // end namespace ironman
 } // end namespace serialize
