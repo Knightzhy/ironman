@@ -29,8 +29,11 @@ public :
 Message(){}
 virtual ~Message(){}
 
+size_t GetMessageLength(Header *, Payload *);
 ssize_t Serialize(void *buffer, size_t length, Header *, Payload *);
 ssize_t UnSerialize(const void *buffer, size_t length, Header *, Payload *);
+
+int32_t GetMagic() { return _magic;}
 private :
 #pragma pack(push)
 #pragma pack(1)

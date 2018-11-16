@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "message.h"
 
 namespace ironman{
@@ -67,18 +68,27 @@ ssize_t Message::UnSerialize(const void *buffer, size_t length,
 
     size_t offset = 0;
     offset += sizeof(Packet);
+    printf("Packet sizeof = %d, remind length = %d\n", offset, length - offset);
     ssize_t header_length = header->UnSerialize(buffer + offset, length - offset);
     if (header_length < 0) {
         return -1;
     }
     offset += (size_t)header_length;
+    printf("Packet + Header Length = %d, remind length = %d\n", offset, length - offset);
     ssize_t payload_length = payload->UnSerialize(buffer + offset, length - offset);
     if (payload_length < 0) {
         return -1;
     }
-    offset += (size_t)header_length;
+    offset += (size_t)payload_length;
+    printf("Packet + Header + Payload = %d\n", offset);
 
     return (ssize_t)offset;
+}
+
+size_t Message::GetMessageLength(Header *header, Payload *payload)
+{
+    return sizeof(Packet) + header->GetHeaderLength()
+        + payload->GetPayloadLength();
 }
 
 } // end namespace serialize

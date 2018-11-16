@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include "../serialize/string_payload.h"
 #include "../serialize/sample_header.h"
+#include "../serialize/message.h"
 
 TEST(PAYLOAD, A)
 {
@@ -69,6 +70,49 @@ TEST(PAYLOAD, B)
 
 TEST(MSG, A)
 {
+    ironman::serialize::SampleHeader sample_header;
+    sample_header.Init();
+    sample_header.SetMagic(55443322);
+    sample_header.SetSeq(7788231);
+    sample_header.SetInterface(118);
+    ironman::serialize::Header *header = &sample_header;
+
+    ironman::serialize::StringPayload string_payload("AMND Hello World!");
+    ironman::serialize::Payload *payload = &string_payload;
+
+    ironman::serialize::Message message;
+    size_t length = message.GetMessageLength(header, payload);
+    printf("%d, %d, %d\n", header->GetHeaderLength(),
+            payload->GetPayloadLength(), (int)length);
+
+    void *buffer = malloc(length);
+    ASSERT_TRUE(buffer != NULL);
+    ssize_t l = message.Serialize(buffer, length, header, payload);
+    printf("Serialize return %d\n", l);
+
+    /*************/
+    ironman::serialize::SampleHeader sample_header_s;
+    ironman::serialize::StringPayload string_payload_s;
+    ssize_t m = message.UnSerialize(buffer, length,
+            (ironman::serialize::Header*)&sample_header_s,
+            (ironman::serialize::Payload*)&string_payload_s);
+    printf("UnSerialzie return %d\n", m);
+    printf("message:magic=%d\n", message.GetMagic());
+    printf("header:magic=%d, seq=%d, interface=%d\n",
+            sample_header_s.GetMagic(),
+            sample_header_s.GetSeq(),
+            sample_header_s.GetInterface());
+    printf("payload:");
+
+    free(buffer);
+    buffer = NULL;
+
+    buffer = malloc(100);
+    memset(buffer, 0 , 100);
+    string_payload_s.Serialize(buffer, 100);
+    printf("string_payload:msg=%s\n", buffer);
+    free(buffer);
+    buffer = NULL;
 }
 
 int main(int argc, char *argv[])
