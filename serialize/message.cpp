@@ -24,7 +24,7 @@ ssize_t Message::Serialize(void *buffer, size_t length,
     }
 
     Packet *packet = reinterpret_cast<Packet *>(buffer);
-    packet->magic = 345543;
+    packet->magic = _magic;
     packet->length = (uint32_t)packet_length;
     offset += sizeof(Packet);
 

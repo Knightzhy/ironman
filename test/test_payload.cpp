@@ -80,7 +80,7 @@ TEST(MSG, A)
     ironman::serialize::StringPayload string_payload("AMND Hello World!");
     ironman::serialize::Payload *payload = &string_payload;
 
-    ironman::serialize::Message message;
+    ironman::serialize::Message message(98120);
     size_t length = message.GetMessageLength(header, payload);
     printf("%d, %d, %d\n", header->GetHeaderLength(),
             payload->GetPayloadLength(), (int)length);

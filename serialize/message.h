@@ -26,13 +26,15 @@ namespace serialize{
 
 class Message{
 public :
-Message(){}
+Message() {}
+Message(int32_t magic) : _magic(magic){}
 virtual ~Message(){}
 
 size_t GetMessageLength(Header *, Payload *);
 ssize_t Serialize(void *buffer, size_t length, Header *, Payload *);
 ssize_t UnSerialize(const void *buffer, size_t length, Header *, Payload *);
 
+void SetMagic(int32_t magic) { _magic = magic;}
 int32_t GetMagic() { return _magic;}
 private :
 #pragma pack(push)
