@@ -4,7 +4,7 @@ namespace ironman{
 namespace serialize{
 
 ssize_t Message::Serialize(void *buffer, size_t length,
-        const Header *header, const Payload *payload)
+        Header *header, Payload *payload)
 {
     if (header == NULL) {
         return -1;
@@ -14,8 +14,9 @@ ssize_t Message::Serialize(void *buffer, size_t length,
     }
 
     size_t offset = 0;
+    void *remind_buffer = buffer;
     size_t packet_length = sizeof(Packet) + header->GetHeaderLength()
-        + payload->GetMessageLength();
+        + payload->GetPayloadLength();
 
     if (length < packet_length) {
         return -1;
@@ -23,26 +24,28 @@ ssize_t Message::Serialize(void *buffer, size_t length,
 
     Packet *packet = reinterpret_cast<Packet *>(buffer);
     packet->magic = 345543;
-    packet->length = packet_length;
+    packet->length = (uint32_t)packet_length;
     offset += sizeof(Packet);
 
-    ssize_t header_length = header->Serialize(buffer + offset, length - offset);
+    remind_buffer = buffer + (int)offset;
+    ssize_t header_length = header->Serialize(remind_buffer, length - offset);
     if (header_length < 0) {
         return -1;
     }
-    if (header_length != header->GetHeaderLength()) {
+    if ((size_t)header_length != header->GetHeaderLength()) {
         return -1;
     }
-    offset += header_length;
+    offset += (size_t)header_length;
 
-    ssize_t payload_length = payload->Serialize(buffer + offset, length - offset);
+    remind_buffer = buffer + (int)offset;
+    ssize_t payload_length = payload->Serialize(remind_buffer, length - offset);
     if (payload_length < 0) {
         return -1;
     }
-    if (payload_length != payload->GetPayloadLength()) {
+    if ((size_t)payload_length != payload->GetPayloadLength()) {
         return -1;
     }
-    offset += payload_length;
+    offset += (size_t)payload_length;
     return (ssize_t)offset;
 
 }
@@ -52,7 +55,11 @@ ssize_t Message::UnSerialize(const void *buffer, size_t length,
 {
     const Packet *packet = reinterpret_cast<const Packet *>(buffer);
     _magic = packet->magic;
+
     size_t packet_length = packet->length;
+    if (packet_length > length) {
+        return -1;
+    }
 
     // TODO check magic and length
     // ,,,
@@ -64,12 +71,12 @@ ssize_t Message::UnSerialize(const void *buffer, size_t length,
     if (header_length < 0) {
         return -1;
     }
-    offset += header_length;
+    offset += (size_t)header_length;
     ssize_t payload_length = payload->UnSerialize(buffer + offset, length - offset);
     if (payload_length < 0) {
         return -1;
     }
-    offset += header_length;
+    offset += (size_t)header_length;
 
     return (ssize_t)offset;
 }

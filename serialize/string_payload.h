@@ -27,7 +27,7 @@ StringPayload();
 StringPayload(const char *msg);
 ~StringPayload(){}
 virtual size_t GetPayloadLength();
-virtual int Unserialize(const void *buffer, size_t length);
+virtual int UnSerialize(const void *buffer, size_t length);
 virtual ssize_t Serialize(void *buffer, size_t length);
 
 private :

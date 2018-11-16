@@ -18,7 +18,7 @@ size_t StringPayload::GetPayloadLength()
 }
 ssize_t StringPayload::Serialize(void *buffer, size_t length)
 {
-    size_t msg_length = this->GetMessageLength();
+    size_t msg_length = this->GetPayloadLength();
     if (msg_length > length) {
         return -1;
     }
@@ -29,7 +29,7 @@ ssize_t StringPayload::Serialize(void *buffer, size_t length)
     return (ssize_t)msg_length;
 }
 
-int StringPayload::Unserialize(const void *buffer, size_t length)
+int StringPayload::UnSerialize(const void *buffer, size_t length)
 {
     memset(_msg, 0, _kMaxLength);
     if (length >= _kMaxLength) {

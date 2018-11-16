@@ -23,7 +23,7 @@ public:
 Payload(){}
 virtual ~Payload(){}
 virtual size_t GetPayloadLength() = 0;
-virtual int Unserialize(const void *buffer, size_t length) = 0;
+virtual int UnSerialize(const void *buffer, size_t length) = 0;
 virtual ssize_t Serialize(void *buffer, size_t length) = 0;
 
 }; // end class Payload

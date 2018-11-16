@@ -29,8 +29,8 @@ public :
 Message(){}
 virtual ~Message(){}
 
-ssize_t Serialize(void *buffer, const header *, const payload *);
-ssize_t UnSerialize(const void *buffer, size_t length, header *, payload *);
+ssize_t Serialize(void *buffer, size_t length, Header *, Payload *);
+ssize_t UnSerialize(const void *buffer, size_t length, Header *, Payload *);
 private :
 #pragma pack(push)
 #pragma pack(1)

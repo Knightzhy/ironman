@@ -4,12 +4,11 @@
 #include <gtest/gtest.h>
 #include "../serialize/string_payload.h"
 #include "../serialize/sample_header.h"
-#include "../serialize/sample_message.h"
 
 TEST(PAYLOAD, A)
 {
     ironman::serialize::StringPayload string_payload("AMND");
-    size_t length = string_payload.GetMessageLength();
+    size_t length = string_payload.GetPayloadLength();
     char *buffer = (char *)malloc(length);
     ssize_t l = string_payload.Serialize(buffer, length);
     if (l < 0) {
@@ -21,8 +20,8 @@ TEST(PAYLOAD, A)
 
     ironman::serialize::Payload *string_payload2 =
         new ironman::serialize::StringPayload;
-    string_payload2->Unserialize(buffer, (size_t)l);
-    size_t length2 = string_payload2->GetMessageLength();
+    string_payload2->UnSerialize(buffer, (size_t)l);
+    size_t length2 = string_payload2->GetPayloadLength();
     char *buffer2 = (char *)malloc(length2);
     ssize_t w = string_payload2->Serialize(buffer2, length2);
     if (w < 0) {
@@ -66,6 +65,10 @@ TEST(PAYLOAD, B)
     delete sample;
     sample = NULL;
     header2 = NULL;
+}
+
+TEST(MSG, A)
+{
 }
 
 int main(int argc, char *argv[])
