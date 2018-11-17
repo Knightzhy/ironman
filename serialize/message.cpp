@@ -91,8 +91,6 @@ int Message::GetMessageLength(const void *buffer, size_t length)
         return -1;
     }
     const Packet *packet = reinterpret_cast<const Packet *>(buffer);
-    // TODO check magic
-    // ,,,
     if (_magic != packet->magic) {
         printf("magic error.\n");
         return -1;
