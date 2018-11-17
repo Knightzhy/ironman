@@ -35,31 +35,22 @@ TEST(PAYLOAD, A)
 
 TEST(PAYLOAD, B)
 {
-    ironman::serialize::SampleHeader sample_header;
-    sample_header.Init();
-    sample_header.SetMagic(55443322);
-    sample_header.SetSeq(7788231);
-    sample_header.SetInterface(118);
+    ironman::serialize::SampleHeader sample_header(55443322, 7788231, 118);
     ironman::serialize::Header *header = &sample_header;
-    printf("header:%p, %p, %d, %d, %ld, %d\n",
+    printf("header:%p, %p, %d\n",
             header, &sample_header,
-            (int)header->GetHeaderLength(),
-            sample_header.GetMagic(),
-            sample_header.GetSeq(),
-            sample_header.GetInterface());
+            (int)header->GetHeaderLength());
     void *buffer = malloc(header->GetHeaderLength());
     ssize_t length = header->Serialize(buffer, header->GetHeaderLength());
     printf("buffer:%p, %d\n", buffer, (int)length);
 
     ironman::serialize::SampleHeader *sample =
         new ironman::serialize::SampleHeader;
-    sample->Init();
     ironman::serialize::Header *header2 = sample;
     header2->UnSerialize(buffer, (size_t)length);
-    printf("sample:%p, %p, %d, %ld, %d\n",
-            sample, header2,
-            sample->GetMagic(),
-            sample->GetSeq(), sample->GetInterface());
+    printf("sample:%p, %p\n",
+            sample, header2);
+    sample->PrintOptions();
 
     free(buffer);
     buffer = NULL;
@@ -70,11 +61,7 @@ TEST(PAYLOAD, B)
 
 TEST(MSG, A)
 {
-    ironman::serialize::SampleHeader sample_header;
-    sample_header.Init();
-    sample_header.SetMagic(55443322);
-    sample_header.SetSeq(7788231);
-    sample_header.SetInterface(118);
+    ironman::serialize::SampleHeader sample_header(55443322, 7788231, 118);
     ironman::serialize::Header *header = &sample_header;
 
     ironman::serialize::StringPayload string_payload("AMND Hello World!");
@@ -97,10 +84,7 @@ TEST(MSG, A)
             &sample_header_s, &string_payload_s);
     ssize_t m = message_s.UnSerialize(buffer, length);
     printf("UnSerialzie return %d\n", m);
-    printf("header:magic=%d, seq=%d, interface=%d\n",
-            sample_header_s.GetMagic(),
-            sample_header_s.GetSeq(),
-            sample_header_s.GetInterface());
+    sample_header_s.PrintOptions();
     printf("payload:");
 
     free(buffer);

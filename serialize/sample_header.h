@@ -22,21 +22,16 @@ namespace ironman{
 namespace serialize{
 class SampleHeader : public Header {
 public :
-SampleHeader(){}
+SampleHeader() : _magic(0), _seq(0), _interface(0){}
+SampleHeader(int32_t magic, uint64_t seq, uint32_t interface)
+    : _magic(magic), _seq(seq), _interface(interface){}
 virtual ~SampleHeader(){}
 
 virtual size_t GetHeaderLength();
 virtual ssize_t Serialize(void *buffer, size_t length);
 virtual ssize_t UnSerialize(const void *buffer, size_t length);
 
-void Init();
-
-void SetMagic(int32_t magic);
-int32_t GetMagic();
-void SetSeq(uint64_t seq);
-uint64_t GetSeq();
-void SetInterface(uint32_t interface);
-uint32_t GetInterface();
+void PrintOptions();
 
 private :
 #pragma pack(push)

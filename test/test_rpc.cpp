@@ -16,10 +16,7 @@
 TEST(RPC, A)
 {
     // Serialize
-    ironman::serialize::SampleHeader sample_header;
-    sample_header.SetMagic(8788);
-    sample_header.SetSeq(12990);
-    sample_header.SetInterface(33);
+    ironman::serialize::SampleHeader sample_header(8788, 12990, 33);
 
     size_t length = sample_header.GetHeaderLength();
     printf("sample_header.length=%d.\n", (int)length);
@@ -27,15 +24,13 @@ TEST(RPC, A)
     void *buffer = malloc(length);
     ssize_t count = sample_header.Serialize(buffer, length);
     printf("sample_header.serialize count=%d.\n", (int)count);
+    sample_header.PrintOptions();
 
     // UnSerialize
     ironman::serialize::SampleHeader sample_header2;
     count = sample_header2.UnSerialize(buffer, count);
     printf("sample_header.unserialize count=%d.\n", (int)count);
-    printf("magic=%d, seq=%d, interface=%d.\n",
-            sample_header2.GetMagic(),
-            sample_header2.GetSeq(),
-            sample_header2.GetInterface());
+    sample_header2.PrintOptions();
 
     free(buffer);
     buffer = NULL;
@@ -53,6 +48,7 @@ TEST(RPC, B)
     void *buffer = malloc(length);
     ssize_t count = string_payload.Serialize(buffer, length);
     printf("string_payload.serialize count=%d.\n", (int)count);
+    string_payload.PrintMsg();
 
     // UnSerialize
     ironman::serialize::StringPayload string_payload2;
@@ -69,11 +65,7 @@ TEST(RPC, B)
 TEST(RPC, C)
 {
     // Serialize
-    ironman::serialize::SampleHeader sample_header;
-    sample_header.Init();
-    sample_header.SetMagic(55443322);
-    sample_header.SetSeq(7788231);
-    sample_header.SetInterface(118);
+    ironman::serialize::SampleHeader sample_header(55443322, 7788231, 118);
     ironman::serialize::Header *header = &sample_header;
 
     ironman::serialize::StringPayload string_payload("AMND Hello World!");
@@ -88,6 +80,10 @@ TEST(RPC, C)
     ASSERT_TRUE(buffer != NULL);
     ssize_t l = message.Serialize(buffer, length);
     printf("Serialize return %d\n", l);
+    printf("Before Serialize.\n");
+    sample_header.PrintOptions();
+    string_payload.PrintMsg();
+    printf("-----------------\n");
 
     // UnSerialize
     ironman::serialize::SampleHeader sample_header_s;
@@ -96,12 +92,10 @@ TEST(RPC, C)
             &sample_header_s, &string_payload_s);
     ssize_t m = message_s.UnSerialize(buffer, length);
     printf("UnSerialzie return %d\n", m);
-    printf("header:magic=%d, seq=%d, interface=%d\n",
-            sample_header_s.GetMagic(),
-            sample_header_s.GetSeq(),
-            sample_header_s.GetInterface());
-    printf("payload:");
+    printf("After Unserialize.\n");
+    sample_header_s.PrintOptions();
     string_payload_s.PrintMsg();
+    printf("-----------------\n");
 
     free(buffer);
     buffer = NULL;
@@ -113,11 +107,7 @@ TEST(RPC, C)
 TEST(RPC, D)
 {
     // Serialize
-    ironman::serialize::SampleHeader sample_header;
-    sample_header.Init();
-    sample_header.SetMagic(55443322);
-    sample_header.SetSeq(7788231);
-    sample_header.SetInterface(118);
+    ironman::serialize::SampleHeader sample_header(55443322, 7788231, 118);
     ironman::serialize::Header *header = &sample_header;
 
     ironman::serialize::StringPayload string_payload("AMND Hello World!");
@@ -131,6 +121,10 @@ TEST(RPC, D)
     memset(buffer, 0, length);
     ssize_t count = message_factory.Serialize(buffer, length);
     printf("massage_factory.serialize count=%d, length=%d.\n", (int)count, (int)length);
+    printf("Before Serialize.\n");
+    sample_header.PrintOptions();
+    string_payload.PrintMsg();
+    printf("-----------------\n");
 
     // UnSerialize
     ironman::serialize::SampleHeader sample_header_s;
@@ -141,6 +135,10 @@ TEST(RPC, D)
     printf("MessageFactory.GetMessageLength count=%d.\n", (int)count);
     count = s.OnMessage(buffer, count);
     printf("MessageFactory.OnMessage count=%d.\n", (int)count);
+    printf("After Unserialize.\n");
+    sample_header_s.PrintOptions();
+    string_payload_s.PrintMsg();
+    printf("-----------------\n");
 
     free(buffer);
     buffer = NULL;
@@ -155,11 +153,7 @@ TEST(RPC, E)
         return ;
     }
     // Serialize
-    ironman::serialize::SampleHeader sample_header;
-    sample_header.Init();
-    sample_header.SetMagic(55443322);
-    sample_header.SetSeq(7788231);
-    sample_header.SetInterface(118);
+    ironman::serialize::SampleHeader sample_header(55443322, 7788231, 118);
     ironman::serialize::Header *header = &sample_header;
 
     ironman::serialize::StringPayload string_payload("AMND Hello World!");
@@ -171,6 +165,8 @@ TEST(RPC, E)
     ironman::serialize::rpc::RpcBase rpc_base;
     int ret = rpc_base.Sended(fd, &message_factory);
     printf("RpcBase.Sended ret=%d.\n", ret);
+    sample_header.PrintOptions();
+    string_payload.PrintMsg();
     close(fd);
 }
 
@@ -183,13 +179,15 @@ TEST(RPC, F)
         return ;
     }
 
-    ironman::serialize::SampleHeader sample_header_s;
-    ironman::serialize::StringPayload string_payload_s;
-    ironman::serialize::Message message_s(98120, &sample_header_s, &string_payload_s);
-    ironman::serialize::rpc::MessageFactory message_factory(&message_s);
+    ironman::serialize::SampleHeader sample_header;
+    ironman::serialize::StringPayload string_payload;
+    ironman::serialize::Message message(98120, &sample_header, &string_payload);
+    ironman::serialize::rpc::MessageFactory message_factory(&message);
     ironman::serialize::rpc::RpcBase rpc_base;
     int ret = rpc_base.Received(fd, &message_factory);
     printf("RpcBase.Received ret=%d.\n", ret);
+    sample_header.PrintOptions();
+    string_payload.PrintMsg();
     close(fd);
 }
 

@@ -1,4 +1,5 @@
 #include "sample_header.h"
+#include <stdio.h>
 
 namespace ironman{
 namespace serialize{
@@ -8,43 +9,6 @@ size_t SampleHeader::GetHeaderLength()
     return sizeof(_magic)
          + sizeof(_seq)
          + sizeof(_interface);
-}
-
-void SampleHeader::Init()
-{
-    _magic = 0;
-    _seq = 0;
-    _interface = 0;
-}
-
-void SampleHeader::SetMagic(int32_t magic)
-{
-    _magic = magic;
-}
-
-int32_t SampleHeader::GetMagic()
-{
-    return _magic;
-}
-
-void SampleHeader::SetSeq(uint64_t seq)
-{
-    _seq = seq;
-}
-
-uint64_t SampleHeader::GetSeq()
-{
-    return _seq;
-}
-
-void SampleHeader::SetInterface(uint32_t interface)
-{
-    _interface = interface;
-}
-
-uint32_t SampleHeader::GetInterface()
-{
-    return _interface;
 }
 
 ssize_t SampleHeader::Serialize(void *buffer, size_t length)
@@ -65,7 +29,6 @@ ssize_t SampleHeader::Serialize(void *buffer, size_t length)
 
 ssize_t SampleHeader::UnSerialize(const void *buffer, size_t length)
 {
-    this->Init();
     const SampleHeader::Options *options =
         reinterpret_cast<const SampleHeader::Options *>(buffer);
     _magic = options->magic;
@@ -75,6 +38,13 @@ ssize_t SampleHeader::UnSerialize(const void *buffer, size_t length)
         return -1;
     }
     return (ssize_t)this->GetHeaderLength();
+}
+
+void SampleHeader::PrintOptions()
+{
+    printf("options: =======\n");
+    printf("magic:%d, seq=%d, interface=%d\n", _magic, _seq, _interface);
+    printf("options: =======\n");
 }
 
 } // end namespace serialize
