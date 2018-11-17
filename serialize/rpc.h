@@ -14,6 +14,7 @@
  */
 #ifndef __IRONMAN_SERIALIZE_RPC_BASE_H__
 #define __IRONMAN_SERIALIZE_RPC_BASE_H__
+#include <stdlib.h>
 #include "rpc_factory.h"
 namespace ironman{
 namespace serialize{
@@ -21,8 +22,8 @@ namespace rpc{
 
 class RpcBase {
 public :
-int RpcBase::OnReceived(const void *buffer, size_t length, RpcFactory *rpc_factory);
-int RpcBase::Received(int fd, RpcFactory *rpc_factory);
+int OnReceived(const void *buffer, size_t length, RpcFactory *rpc_factory);
+int Received(int fd, RpcFactory *rpc_factory);
 int Sended(int fd, RpcFactory *rpc_factory);
 };
 

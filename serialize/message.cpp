@@ -68,21 +68,29 @@ ssize_t Message::UnSerialize(const void *buffer, size_t length,
 
     size_t offset = 0;
     offset += sizeof(Packet);
-    printf("Packet sizeof = %d, remind length = %d\n", offset, length - offset);
+    printf("Packet sizeof = %d, remind length = %d\n", (int)offset, (int)(length - offset));
     ssize_t header_length = header->UnSerialize(buffer + offset, length - offset);
     if (header_length < 0) {
         return -1;
     }
     offset += (size_t)header_length;
-    printf("Packet + Header Length = %d, remind length = %d\n", offset, length - offset);
+    printf("Packet + Header Length = %d, remind length = %d\n", (int)offset, (int)(length - offset));
     ssize_t payload_length = payload->UnSerialize(buffer + offset, length - offset);
     if (payload_length < 0) {
         return -1;
     }
     offset += (size_t)payload_length;
-    printf("Packet + Header + Payload = %d\n", offset);
+    printf("Packet + Header + Payload = %d\n", (int)offset);
 
     return (ssize_t)offset;
+}
+
+int Message::GetMessageLength(const void *buffer, size_t length)
+{
+    const Packet *packet = reinterpret_cast<const Packet *>(buffer);
+    // TODO check magic
+    // ,,,
+    return packet->length;
 }
 
 size_t Message::GetMessageLength(Header *header, Payload *payload)
@@ -97,7 +105,7 @@ size_t Message::GetMessageLength()
 
 ssize_t Message::Serialize(void *buffer, size_t length)
 {
-    return this->Serialize(bufer, length, _header, _payload);
+    return this->Serialize(buffer, length, _header, _payload);
 }
 
 ssize_t Message::UnSerialize(const void *buffer, size_t length)

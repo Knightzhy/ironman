@@ -1,3 +1,4 @@
+#include "message_factory.h"
 namespace ironman{
 namespace serialize{
 namespace rpc{
@@ -10,7 +11,7 @@ ssize_t MessageFactory::GetMessageLength(const void *buffer, size_t length)
 
 ssize_t MessageFactory::OnMessage(const void *buffer, size_t length)
 {
-    ironman::serialize::Message message();
+    ironman::serialize::Message message;
     ironman::serialize::SampleHeader sample_header_s;
     ironman::serialize::StringPayload string_payload_s;
     ssize_t m = message.UnSerialize(buffer, length,
@@ -26,11 +27,14 @@ ssize_t MessageFactory::OnMessage(const void *buffer, size_t length)
     return 0;
 }
 
-virtual ssize_t MessageFactory::Serialize(void *buffer, size_t *length)
+ssize_t MessageFactory::Serialize(void *buffer, size_t *length)
 {
-    size_t buffer_length = _message.GetMessageLength();
-    void *buffer = malloc(length);
-    *length = _message.Serialize(buffer, buffer_length);
+    if (_message == NULL) {
+        return -1;
+    }
+    size_t buffer_length = _message->GetMessageLength();
+    buffer = malloc(buffer_length);
+    *length = _message->Serialize(buffer, buffer_length);
     return *length;
 }
 

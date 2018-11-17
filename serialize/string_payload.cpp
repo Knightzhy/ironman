@@ -36,7 +36,7 @@ int StringPayload::UnSerialize(const void *buffer, size_t length)
         return -1;
     }
     strncpy(_msg,reinterpret_cast<const char *>(buffer), length);
-    return length;
+    return (int)length;
 }
 
 void StringPayload::PrintMsg()

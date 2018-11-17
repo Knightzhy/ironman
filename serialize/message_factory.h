@@ -14,12 +14,20 @@
  */
 #ifndef __IRONMAN_SERIALIZE_MESSAGE_FACTORY_H__
 #define __IRONMAN_SERIALIZE_MESSAGE_FACTORY_H__
+#include "stdio.h"
+#include <stdlib.h>
 #include "rpc_factory.h"
+#include "message.h"
+#include "string_payload.h"
+#include "sample_header.h"
 namespace ironman{
 namespace serialize{
 namespace rpc{
 class MessageFactory : public RpcFactory{
 public :
+MessageFactory() : _message(NULL){}
+MessageFactory(Message *message) : _message(message){}
+~MessageFactory(){}
 virtual ssize_t GetMessageLength(const void *buffer, size_t length);
 virtual ssize_t OnMessage(const void *buffer, size_t length);
 virtual ssize_t Serialize(void *buffer, size_t *length);

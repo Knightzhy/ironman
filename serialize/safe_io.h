@@ -13,29 +13,21 @@
  * limitations under the License.
  */
 
-#ifndef __IRONMAN_SERIALIZE_STRING_PAYLOAD_H__
-#define __IRONMAN_SERIALIZE_STRING_PAYLOAD_H__
-#include <string.h>
+
+#ifndef __IRONMAN_SERIALIZE_SAFE_IO_H__
+#define __IRONMAN_SERIALIZE_SAFE_IO_H__
 #include <stdint.h>
-#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
 #include <stdio.h>
-#include "payload.h"
+#include <unistd.h>
+#include <errno.h>
 namespace ironman{
 namespace serialize{
-class StringPayload : public Payload{
-public :
-StringPayload();
-StringPayload(const char *msg);
-~StringPayload(){}
-virtual size_t GetPayloadLength();
-virtual int UnSerialize(const void *buffer, size_t length);
-virtual ssize_t Serialize(void *buffer, size_t length);
-void PrintMsg();
 
-private :
-    char _msg[100];
-    static uint32_t _kMaxLength;
-}; // end class StringPayload
-} // end namespace ironman
-} // end namespace serialize
+extern ssize_t readn(int fd, void *vptr, size_t n);
+extern ssize_t writen(int fd, const void *vptr, size_t n);
+
+} // end serialize
+} // end ironman
 #endif
