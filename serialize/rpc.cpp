@@ -46,10 +46,12 @@ int RpcBase::Received(int fd, RpcFactory *rpc_factory)
         count = readn(fd, buffer + incompleted, buffer_length - incompleted);
         if (count < 0) {
             printf("connection fd[%d] readn return %d.\n", fd, (int)count);
+            free(buffer);
             return (int)count;
         }
         if (count == 0) {
             printf("connection fd[%d] readn return %d.\n", fd, (int)count);
+            free(buffer);
             return (int)count;
         }
 
@@ -58,10 +60,11 @@ int RpcBase::Received(int fd, RpcFactory *rpc_factory)
         incompleted = incompleted + count;
 
         ssize_t ret = OnReceived(buffer, incompleted, rpc_factory);
-        if (incompleted < 0) {
-            return (int)incompleted;
+        if (ret < 0) {
+            free(buffer);
+            return (int)ret;
         }
-        if (incompleted == 0) {
+        if (ret == 0) {
             continue;
         }
         printf("connection fd[%d] received incompleted, [%d]Bytes.\n", fd, (int)ret);

@@ -23,7 +23,7 @@ namespace serialize{
 class SampleHeader : public Header {
 public :
 SampleHeader(){}
-~SampleHeader(){}
+virtual ~SampleHeader(){}
 
 virtual size_t GetHeaderLength();
 virtual ssize_t Serialize(void *buffer, size_t length);

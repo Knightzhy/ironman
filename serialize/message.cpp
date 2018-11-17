@@ -57,14 +57,14 @@ ssize_t Message::UnSerialize(const void *buffer, size_t length,
     const Packet *packet = reinterpret_cast<const Packet *>(buffer);
     _magic = packet->magic;
 
+    if (_magic != packet->magic) {
+        printf("magic error.\n");
+        return -1;
+    }
     size_t packet_length = packet->length;
     if (packet_length > length) {
         return -1;
     }
-
-    // TODO check magic and length
-    // ,,,
-
 
     size_t offset = 0;
     offset += sizeof(Packet);
@@ -93,6 +93,10 @@ int Message::GetMessageLength(const void *buffer, size_t length)
     const Packet *packet = reinterpret_cast<const Packet *>(buffer);
     // TODO check magic
     // ,,,
+    if (_magic != packet->magic) {
+        printf("magic error.\n");
+        return -1;
+    }
     return packet->length;
 }
 

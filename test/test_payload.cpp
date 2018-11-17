@@ -80,24 +80,23 @@ TEST(MSG, A)
     ironman::serialize::StringPayload string_payload("AMND Hello World!");
     ironman::serialize::Payload *payload = &string_payload;
 
-    ironman::serialize::Message message(98120);
-    size_t length = message.GetMessageLength(header, payload);
+    ironman::serialize::Message message(98120, header, payload);
+    size_t length = message.GetMessageLength();
     printf("%d, %d, %d\n", header->GetHeaderLength(),
             payload->GetPayloadLength(), (int)length);
 
     void *buffer = malloc(length);
     ASSERT_TRUE(buffer != NULL);
-    ssize_t l = message.Serialize(buffer, length, header, payload);
+    ssize_t l = message.Serialize(buffer, length);
     printf("Serialize return %d\n", l);
 
     /*************/
     ironman::serialize::SampleHeader sample_header_s;
     ironman::serialize::StringPayload string_payload_s;
-    ssize_t m = message.UnSerialize(buffer, length,
-            (ironman::serialize::Header*)&sample_header_s,
-            (ironman::serialize::Payload*)&string_payload_s);
+    ironman::serialize::Message message_s(98120,
+            &sample_header_s, &string_payload_s);
+    ssize_t m = message_s.UnSerialize(buffer, length);
     printf("UnSerialzie return %d\n", m);
-    printf("message:magic=%d\n", message.GetMagic());
     printf("header:magic=%d, seq=%d, interface=%d\n",
             sample_header_s.GetMagic(),
             sample_header_s.GetSeq(),

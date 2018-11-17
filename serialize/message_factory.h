@@ -17,22 +17,22 @@
 #include "stdio.h"
 #include <stdlib.h>
 #include "rpc_factory.h"
-#include "message.h"
-#include "string_payload.h"
-#include "sample_header.h"
+#include "package.h"
 namespace ironman{
 namespace serialize{
 namespace rpc{
 class MessageFactory : public RpcFactory{
 public :
-MessageFactory() : _message(NULL){}
-MessageFactory(Message *message) : _message(message){}
-~MessageFactory(){}
+MessageFactory() : _package(NULL){}
+MessageFactory(Package *package) : _package(package){}
+virtual ~MessageFactory(){}
+
 virtual ssize_t GetMessageLength(const void *buffer, size_t length);
 virtual ssize_t OnMessage(const void *buffer, size_t length);
 virtual ssize_t Serialize(void *buffer, size_t length);
+
 private :
-Message *_message;
+Package *_package;
 };
 
 } // namespace rpc

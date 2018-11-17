@@ -79,24 +79,23 @@ TEST(RPC, C)
     ironman::serialize::StringPayload string_payload("AMND Hello World!");
     ironman::serialize::Payload *payload = &string_payload;
 
-    ironman::serialize::Message message(98120);
-    size_t length = message.GetMessageLength(header, payload);
+    ironman::serialize::Message message(98120, header, payload);
+    size_t length = message.GetMessageLength();
     printf("%d, %d, %d\n", header->GetHeaderLength(),
             payload->GetPayloadLength(), (int)length);
 
     void *buffer = malloc(length);
     ASSERT_TRUE(buffer != NULL);
-    ssize_t l = message.Serialize(buffer, length, header, payload);
+    ssize_t l = message.Serialize(buffer, length);
     printf("Serialize return %d\n", l);
 
     // UnSerialize
     ironman::serialize::SampleHeader sample_header_s;
     ironman::serialize::StringPayload string_payload_s;
-    ssize_t m = message.UnSerialize(buffer, length,
-            (ironman::serialize::Header*)&sample_header_s,
-            (ironman::serialize::Payload*)&string_payload_s);
+    ironman::serialize::Message message_s(98120,
+            &sample_header_s, &string_payload_s);
+    ssize_t m = message_s.UnSerialize(buffer, length);
     printf("UnSerialzie return %d\n", m);
-    printf("message:magic=%d\n", message.GetMagic());
     printf("header:magic=%d, seq=%d, interface=%d\n",
             sample_header_s.GetMagic(),
             sample_header_s.GetSeq(),
@@ -134,7 +133,10 @@ TEST(RPC, D)
     printf("massage_factory.serialize count=%d, length=%d.\n", (int)count, (int)length);
 
     // UnSerialize
-    ironman::serialize::rpc::MessageFactory s;
+    ironman::serialize::SampleHeader sample_header_s;
+    ironman::serialize::StringPayload string_payload_s;
+    ironman::serialize::Message message_s(98120, &sample_header_s, &string_payload_s);
+    ironman::serialize::rpc::MessageFactory s(&message_s);
     count = s.GetMessageLength(buffer, length);
     printf("MessageFactory.GetMessageLength count=%d.\n", (int)count);
     count = s.OnMessage(buffer, count);
@@ -181,7 +183,10 @@ TEST(RPC, F)
         return ;
     }
 
-    ironman::serialize::rpc::MessageFactory message_factory;
+    ironman::serialize::SampleHeader sample_header_s;
+    ironman::serialize::StringPayload string_payload_s;
+    ironman::serialize::Message message_s(98120, &sample_header_s, &string_payload_s);
+    ironman::serialize::rpc::MessageFactory message_factory(&message_s);
     ironman::serialize::rpc::RpcBase rpc_base;
     int ret = rpc_base.Received(fd, &message_factory);
     printf("RpcBase.Received ret=%d.\n", ret);
