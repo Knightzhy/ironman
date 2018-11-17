@@ -26,7 +26,7 @@ virtual ~RpcFactory(){}
 
 virtual ssize_t GetMessageLength(const void *buffer, size_t length) = 0;
 virtual ssize_t OnMessage(const void *buffer, size_t length) = 0;
-virtual ssize_t Serialize(void *buffer, size_t *length) = 0;
+virtual ssize_t Serialize(void *buffer, size_t length) = 0;
 
 }; // end class RpcFactory
 

@@ -110,6 +110,35 @@ TEST(RPC, C)
 //
 TEST(RPC, D)
 {
+    // Serialize
+    ironman::serialize::SampleHeader sample_header;
+    sample_header.Init();
+    sample_header.SetMagic(55443322);
+    sample_header.SetSeq(7788231);
+    sample_header.SetInterface(118);
+    ironman::serialize::Header *header = &sample_header;
+
+    ironman::serialize::StringPayload string_payload("AMND Hello World!");
+    ironman::serialize::Payload *payload = &string_payload;
+
+    ironman::serialize::Message message(98120, header, payload);
+    ironman::serialize::rpc::MessageFactory message_factory(&message);
+
+    void *buffer = malloc(1000);
+    size_t length = 1000;
+    memset(buffer, 0, length);
+    ssize_t count = message_factory.Serialize(buffer, length);
+    printf("massage_factory.serialize count=%d, length=%d.\n", (int)count, (int)length);
+
+    // UnSerialize
+    ironman::serialize::rpc::MessageFactory s;
+    count = s.GetMessageLength(buffer, length);
+    printf("MessageFactory.GetMessageLength count=%d.\n", (int)count);
+    count = s.OnMessage(buffer, count);
+    printf("MessageFactory.OnMessage count=%d.\n", (int)count);
+
+    free(buffer);
+    buffer = NULL;
 }
 
 // Rpc

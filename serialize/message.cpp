@@ -87,6 +87,9 @@ ssize_t Message::UnSerialize(const void *buffer, size_t length,
 
 int Message::GetMessageLength(const void *buffer, size_t length)
 {
+    if (buffer == NULL) {
+        return -1;
+    }
     const Packet *packet = reinterpret_cast<const Packet *>(buffer);
     // TODO check magic
     // ,,,

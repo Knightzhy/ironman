@@ -4,8 +4,11 @@ namespace serialize{
 namespace rpc{
 ssize_t MessageFactory::GetMessageLength(const void *buffer, size_t length)
 {
+    if (buffer == NULL) {
+        printf("GetMessageLength's buffer is NULL.\n");
+        return -1;
+    }
     ssize_t l = Message::GetMessageLength(buffer, length);
-    printf("MessageLength [%d].\n", (int)l);
     return l;
 }
 
@@ -27,15 +30,22 @@ ssize_t MessageFactory::OnMessage(const void *buffer, size_t length)
     return 0;
 }
 
-ssize_t MessageFactory::Serialize(void *buffer, size_t *length)
+ssize_t MessageFactory::Serialize(void *buffer, size_t length)
 {
     if (_message == NULL) {
         return -1;
     }
+    if (buffer == NULL) {
+        return -1;
+    }
     size_t buffer_length = _message->GetMessageLength();
-    buffer = malloc(buffer_length);
-    *length = _message->Serialize(buffer, buffer_length);
-    return *length;
+    printf("message.GetMessage buffer_length=%d.\n", buffer_length);
+    if (buffer_length > length) {
+        printf("buffer is too smaller.\n");
+    }
+    ssize_t count = _message->Serialize(buffer, buffer_length);
+    printf("message.Serialize count=%d", count);
+    return count;
 }
 
 } // namespace rpc

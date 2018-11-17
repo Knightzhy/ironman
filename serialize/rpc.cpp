@@ -73,18 +73,19 @@ int RpcBase::Received(int fd, RpcFactory *rpc_factory)
 
 int RpcBase::Sended(int fd, RpcFactory *rpc_factory)
 {
-    void *buffer = NULL;
-    size_t length;
-    int ret = rpc_factory->Serialize(buffer, &length);
-    if (ret <0) {
-        printf("Serialize failed ret[%d].\n", ret);
+    size_t length = 1000;
+    void *buffer = malloc(length);
+    memset(buffer, 0, length);
+    ssize_t count = rpc_factory->Serialize(buffer, length);
+    if (count <0) {
+        printf("Serialize failed ret[%d].\n", count);
         return -1;
     }
     if (buffer == NULL) {
         return 0;
     }
-    printf("Serialize [%d]Bytes need send.\n", (int)length);
-    ssize_t count = writen(fd, buffer, length);
+    printf("Serialize [%d]Bytes need send.\n", (int)count);
+    count = writen(fd, buffer, count);
     printf("Send [%d]Bytes.\n", (int)count);
     buffer = NULL;
     return 0;
