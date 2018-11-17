@@ -53,6 +53,7 @@ struct Packet{
 #pragma pack(pop)
 protected :
     int32_t _magic;
+public :
     Header *_header;
     Payload *_payload;
 }; // end class

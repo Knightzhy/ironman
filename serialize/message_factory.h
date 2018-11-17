@@ -24,7 +24,7 @@ namespace rpc{
 class MessageFactory : public RpcFactory{
 public :
 MessageFactory() : RpcFactory(NULL){}
-MessageFactory(Package *package) : RpcFactory(package){}
+MessageFactory(Message *package) : RpcFactory(package){}
 virtual ~MessageFactory(){}
 
 virtual ssize_t OnMessage(const void *buffer, size_t length);

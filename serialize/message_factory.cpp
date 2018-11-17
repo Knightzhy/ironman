@@ -6,6 +6,8 @@ ssize_t MessageFactory::OnMessage(const void *buffer, size_t length)
 {
     ssize_t m = _package->UnSerialize(buffer, length);
     printf("UnSerialzie return %d\n", m);
+    _package->_header->PrintOptions();
+    _package->_payload->PrintMsg();
     return m;
 }
 
