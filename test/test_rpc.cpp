@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <gtest/gtest.h>
 #include "../serialize/string_payload.h"
 #include "../serialize/sample_header.h"
@@ -141,9 +144,48 @@ TEST(RPC, D)
     buffer = NULL;
 }
 
-// Rpc
+// Rpc.Sended
 TEST(RPC, E)
-{}
+{
+    int fd = open("xx", O_RDWR | O_CREAT | O_APPEND, 0600);
+    if (fd <0) {
+        printf("open error.\m");
+        return ;
+    }
+    // Serialize
+    ironman::serialize::SampleHeader sample_header;
+    sample_header.Init();
+    sample_header.SetMagic(55443322);
+    sample_header.SetSeq(7788231);
+    sample_header.SetInterface(118);
+    ironman::serialize::Header *header = &sample_header;
+
+    ironman::serialize::StringPayload string_payload("AMND Hello World!");
+    ironman::serialize::Payload *payload = &string_payload;
+
+    ironman::serialize::Message message(98120, header, payload);
+    ironman::serialize::rpc::MessageFactory message_factory(&message);
+
+    ironman::serialize::rpc::RpcBase rpc_base;
+    int ret = rpc_base.Sended(fd, &message_factory);
+    printf("RpcBase.Sended ret=%d.\n", ret);
+    close(fd);
+}
+
+// Rpc.Received
+TEST(RPC, F)
+{
+    int fd = open("xx", O_RDWR | O_CREAT | O_APPEND, 0600);
+    if (fd <0) {
+        printf("open error.\m");
+        return ;
+    }
+
+    ironman::serialize::rpc::MessageFactory message_factory;
+    ironman::serialize::rpc::RpcBase rpc_base;
+    int ret = rpc_base.Received(fd, &message_factory);
+    printf("RpcBase.Received ret=%d.\n", ret);
+}
 
 int main(int argc, char *argv[])
 {

@@ -25,10 +25,11 @@ int RpcBase::OnReceived(const void *buffer, size_t length, RpcFactory *rpc_facto
             printf("msg is imcompleted, return %d.\n", (int)msg_length);
             break;
         }
+
+        ssize_t count = rpc_factory->OnMessage(ptr, msg_length);
+        printf("RpcFactory.OnMessage count=%d.\n", count);
         idle = idle - (size_t)msg_length;
         ptr = ptr + msg_length;
-
-        msg_length = rpc_factory->OnMessage(ptr, msg_length);
     } while(idle > 0);
     return (int)idle;
 }
