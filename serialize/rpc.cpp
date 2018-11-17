@@ -67,6 +67,7 @@ int RpcBase::Received(int fd, RpcFactory *rpc_factory)
         strncpy(ptr, ptr + incompleted - ret, ret);
         incompleted = ret;
     } while (count > 0);
+    free(buffer);
     return 0;
 }
 
