@@ -185,6 +185,7 @@ TEST(RPC, F)
     ironman::serialize::rpc::RpcBase rpc_base;
     int ret = rpc_base.Received(fd, &message_factory);
     printf("RpcBase.Received ret=%d.\n", ret);
+    close(fd);
 }
 
 int main(int argc, char *argv[])
