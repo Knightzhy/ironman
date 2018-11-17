@@ -90,6 +90,19 @@ size_t Message::GetMessageLength(Header *header, Payload *payload)
     return sizeof(Packet) + header->GetHeaderLength()
         + payload->GetPayloadLength();
 }
+size_t Message::GetMessageLength()
+{
+    return this->GetMessageLength(_header, _payload);
+}
 
+ssize_t Message::Serialize(void *buffer, size_t length)
+{
+    return this->Serialize(bufer, length, _header, _payload);
+}
+
+ssize_t Message::UnSerialize(const void *buffer, size_t length)
+{
+    return this->UnSerialize(buffer, length, _header, _payload);
+}
 } // end namespace serialize
 } // end namespace ironman

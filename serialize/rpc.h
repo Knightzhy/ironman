@@ -12,29 +12,21 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-
-#ifndef __IRONMAN_SERIALIZE_STRING_PAYLOAD_H__
-#define __IRONMAN_SERIALIZE_STRING_PAYLOAD_H__
-#include <string.h>
-#include <stdint.h>
-#include <unistd.h>
-#include "payload.h"
+#ifndef __IRONMAN_SERIALIZE_RPC_BASE_H__
+#define __IRONMAN_SERIALIZE_RPC_BASE_H__
+#include "rpc_factory.h"
 namespace ironman{
 namespace serialize{
-class StringPayload : public Payload{
-public :
-StringPayload();
-StringPayload(const char *msg);
-~StringPayload(){}
-virtual size_t GetPayloadLength();
-virtual int UnSerialize(const void *buffer, size_t length);
-virtual ssize_t Serialize(void *buffer, size_t length);
-void PrintMsg();
+namespace rpc{
 
-private :
-    char _msg[100];
-    static uint32_t _kMaxLength;
-}; // end class StringPayload
-} // end namespace ironman
+class RpcBase {
+public :
+int RpcBase::OnReceived(const void *buffer, size_t length, RpcFactory *rpc_factory);
+int RpcBase::Received(int fd, RpcFactory *rpc_factory);
+int Sended(int fd, RpcFactory *rpc_factory);
+};
+
+} // end namespace rpc
 } // end namespace serialize
+} // end namespace ironman
 #endif

@@ -27,12 +27,20 @@ namespace serialize{
 class Message{
 public :
 Message() {}
-Message(int32_t magic) : _magic(magic){}
+Message(int32_t magic) : _magic(magic), _header(NULL), _payload(NULL){}
+Message(int32_t magic, Header *header, Payload *payload) :
+    _magic(magic), _header(header), _payload(payload) {}
+
 virtual ~Message(){}
 
+static int GetMessageLength(const void *buffer, size_t length);
+static int OnMessage(void *buffer, size_t length);
 size_t GetMessageLength(Header *, Payload *);
+size_t GetMessageLength();
 ssize_t Serialize(void *buffer, size_t length, Header *, Payload *);
 ssize_t UnSerialize(const void *buffer, size_t length, Header *, Payload *);
+ssize_t Serialize(void *buffer, size_t length);
+ssize_t UnSerialize(const void *buffer, size_t length);
 
 void SetMagic(int32_t magic) { _magic = magic;}
 int32_t GetMagic() { return _magic;}
@@ -48,6 +56,8 @@ struct Packet{
 #pragma pack(pop)
 protected :
     int32_t _magic;
+    Header *_header;
+    Payload *_payload;
 }; // end class
 
 } // end namespace serialize

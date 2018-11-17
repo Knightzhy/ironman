@@ -20,15 +20,15 @@ namespace rpc{
 
 class RpcFactory{
 public :
-RpcFactory();
-~RpcFactory();
+virtual ~RpcFactory(){}
 
-ssize_t GetMessageLength(const void *buffer, size_t length) = 0;
-size_t GetMessageLength(Payload) = 0;
+virtual ssize_t GetMessageLength(const void *buffer, size_t length) = 0;
+virtual ssize_t OnMessage(const void *buffer, size_t length) = 0;
+virtual ssize_t Serialize(void *buffer, size_t *length) = 0;
 
 }; // end class RpcFactory
 
 } // namespace rpc
 } // namespace serialize
 } // namespace ironman
-#endif __IRONMAN_SERIALIZE_RPC_FACTORY_H__
+#endif

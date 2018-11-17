@@ -38,5 +38,10 @@ int StringPayload::UnSerialize(const void *buffer, size_t length)
     strncpy(_msg,reinterpret_cast<const char *>(buffer), length);
     return length;
 }
+
+void StringPayload::PrintMsg()
+{
+    printf("payload: %s.\n", _msg);
 }
-}
+} // end namespace serialize
+} //  end namespace ironman
