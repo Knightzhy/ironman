@@ -23,16 +23,12 @@ namespace serialize{
 namespace rpc{
 class MessageFactory : public RpcFactory{
 public :
-MessageFactory() : _package(NULL){}
-MessageFactory(Package *package) : _package(package){}
+MessageFactory() : RpcFactory(NULL){}
+MessageFactory(Package *package) : RpcFactory(package){}
 virtual ~MessageFactory(){}
 
-virtual ssize_t GetMessageLength(const void *buffer, size_t length);
 virtual ssize_t OnMessage(const void *buffer, size_t length);
-virtual ssize_t Serialize(void *buffer, size_t length);
 
-private :
-Package *_package;
 };
 
 } // namespace rpc

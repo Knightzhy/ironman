@@ -16,18 +16,23 @@
 #define __IRONMAN_SERIALIZE_RPC_FACTORY_H__
 #include <unistd.h>
 #include <sys/types.h>
+#include "package.h"
 namespace ironman{
 namespace serialize{
 namespace rpc{
 
 class RpcFactory{
 public :
+RpcFactory() : _package(NULL){}
+RpcFactory(Package *package) : _package(package){}
 virtual ~RpcFactory(){}
 
-virtual ssize_t GetMessageLength(const void *buffer, size_t length) = 0;
+virtual ssize_t Serialize(void *buffer, size_t length);
+virtual ssize_t GetMessageLength(const void *buffer, size_t length);
 virtual ssize_t OnMessage(const void *buffer, size_t length) = 0;
-virtual ssize_t Serialize(void *buffer, size_t length) = 0;
 
+protected :
+Package *_package;
 }; // end class RpcFactory
 
 } // namespace rpc
