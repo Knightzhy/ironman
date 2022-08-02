@@ -61,15 +61,12 @@ TEST(PAYLOAD, B)
 
 TEST(MSG, A)
 {
-    ironman::serialize::SampleHeader sample_header(55443322, 7788231, 118);
-    ironman::serialize::Header *header = &sample_header;
-
     ironman::serialize::StringPayload string_payload("AMND Hello World!");
     ironman::serialize::Payload *payload = &string_payload;
 
-    ironman::serialize::Message message(98120, header, payload);
+    ironman::serialize::Message message(98120, payload);
     size_t length = message.GetMessageLength();
-    printf("%d, %d, %d\n", header->GetHeaderLength(),
+    printf("%d, %d\n",
             payload->GetPayloadLength(), (int)length);
 
     void *buffer = malloc(length);
@@ -78,13 +75,11 @@ TEST(MSG, A)
     printf("Serialize return %d\n", l);
 
     /*************/
-    ironman::serialize::SampleHeader sample_header_s;
     ironman::serialize::StringPayload string_payload_s;
     ironman::serialize::Message message_s(98120,
-            &sample_header_s, &string_payload_s);
+            &string_payload_s);
     ssize_t m = message_s.UnSerialize(buffer, length);
     printf("UnSerialzie return %d\n", m);
-    sample_header_s.PrintOptions();
     printf("payload:");
 
     free(buffer);
