@@ -15,8 +15,8 @@
 
 #ifndef __IRONMAN_SERIALIZE_MESSAGE_H__
 #define __IRONMAN_SERIALIZE_MESSAGE_H__
+#include <stdint.h>
 #include "package.h"
-#include "header.h"
 #include "payload.h"
 namespace ironman{
 namespace serialize{
@@ -27,8 +27,8 @@ namespace serialize{
 
 class Message : public Package {
 public :
-Message(int32_t magic, Header *header, Payload *payload) :
-    _magic(magic), _header(header), _payload(payload) {}
+Message(int32_t magic, Payload *payload) :
+    _magic(magic), _payload(payload) {}
 virtual ~Message(){}
 
 virtual int GetMessageLength(const void *buffer, size_t length);
@@ -37,9 +37,9 @@ virtual ssize_t Serialize(void *buffer, size_t length);
 virtual ssize_t UnSerialize(const void *buffer, size_t length);
 
 private :
-size_t GetMessageLength(Header *, Payload *);
-ssize_t Serialize(void *buffer, size_t length, Header *, Payload *);
-ssize_t UnSerialize(const void *buffer, size_t length, Header *, Payload *);
+size_t GetMessageLength(Payload *);
+ssize_t Serialize(void *buffer, size_t length, Payload *);
+ssize_t UnSerialize(const void *buffer, size_t length, Payload *);
 
 private :
 #pragma pack(push)
@@ -47,14 +47,12 @@ private :
 struct Packet{
     int32_t magic;
     uint32_t length;
-    char header[];
     char payload[];
 }; // end struct Packet
 #pragma pack(pop)
 protected :
     int32_t _magic;
 public :
-    Header *_header;
     Payload *_payload;
 }; // end class
 
